@@ -1,6 +1,6 @@
 import { buildQuery, baseURL, path } from "../utils/buildQuery";
 
-export const userURL = {
+export const authURL = {
   //   getUsers: (data: any) => {
   //     const query = buildQuery({
   //       //   sort: data?.sort || "asc",

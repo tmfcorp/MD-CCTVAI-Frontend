@@ -1,13 +1,17 @@
 "use client";
 
-import { userAPI } from "@/services/api/authAPI";
+import { authAPI } from "@/services/api/authAPI";
 import { message } from "antd";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 
 interface User {
+    user_id: string;
     email: string;
+    role_id: string;
+    access_token: string;
+    refresh_token: string;
 }
 
 interface AuthContextType {
@@ -26,49 +30,56 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const [token, setToken] = useState<string | null>(null);
     const router = useRouter();
 
-    // ✅ Load from localStorage on mount
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const storedUser = localStorage.getItem("user");
-            const storedToken = localStorage.getItem("token");
+            const storedUser = Cookies.get("user");
+            const storedToken = Cookies.get("authToken");
 
             if (storedUser) setUser(JSON.parse(storedUser));
             if (storedToken) setToken(storedToken);
         }
     }, []);
 
-    // ✅ Save to localStorage when changed
     useEffect(() => {
         if (typeof window !== "undefined") {
             if (user) {
-                localStorage.setItem("user", JSON.stringify(user));
+                Cookies.set("user", JSON.stringify(user), {
+                    expires: 7,
+                    secure: true,
+                    sameSite: "strict",
+                });
             } else {
-                localStorage.removeItem("user");
+                Cookies.remove("user");
             }
 
             if (token) {
-                localStorage.setItem("token", token);
+                Cookies.set("authToken", token, {
+                    expires: 7,
+                    secure: true,
+                    sameSite: "strict",
+                });
             } else {
-                localStorage.removeItem("token");
+                Cookies.remove("authToken");
             }
         }
     }, [user, token]);
 
     const login = async (data: { email: string; password: string }) => {
-        const res = await userAPI.login(data);
+        const res = await authAPI.login(data);
 
         console.log(res);
 
         if (res.success) {
-            const userData = {
-                email: res.data.email,
-            };
-
-            setUser(userData);
+            setUser(res.data);
             setToken(res.data.access_token);
 
-            // ✅ Set cookie for middleware
             Cookies.set("authToken", res.data.access_token, {
+                expires: 7,
+                secure: true,
+                sameSite: "strict",
+            });
+
+            Cookies.set("user", res.data, {
                 expires: 7,
                 secure: true,
                 sameSite: "strict",
@@ -83,13 +94,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     const logout = async () => {
         try {
-            const res = await userAPI.logout();
+            const res = await authAPI.logout();
 
             console.log(res);
 
             if (res.success) {
                 setUser(null);
                 setToken(null);
+                Cookies.remove("user");
                 Cookies.remove("authToken");
                 router.push("/login");
             } else {

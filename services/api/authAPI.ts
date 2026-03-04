@@ -1,10 +1,10 @@
-import { userURL } from "../url/authURL";
+import { authURL } from "../url/authURL";
 import { authHeader } from "../utils/authHeader";
 
-export const userAPI = {
+export const authAPI = {
   async login(data: any): Promise<any> {
     try {
-      const response = await fetch(userURL.login, {
+      const response = await fetch(authURL.login, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,7 +22,7 @@ export const userAPI = {
 
   async logout(): Promise<any> {
     try {
-      const response = await fetch(userURL.logout, {
+      const response = await fetch(authURL.logout, {
         method: "POST",
         headers: authHeader(),
       });

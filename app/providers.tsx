@@ -7,6 +7,8 @@ import React, { useEffect, useState } from 'react';
 
 import Cookies from 'js-cookie';
 import { AuthProvider } from '@/context/AuthContext';
+import { DataProvider } from '@/context/DataContext';
+import { AbilityProvider } from '@/context/AbilityContext';
 
 export const ThemeColorContext = React.createContext({
     primaryColor: '#1677ff',
@@ -62,7 +64,11 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
                 <AntdConfigProvider>
                     <AuthProvider>
-                        {children}
+                        <AbilityProvider>
+                            <DataProvider>
+                                {children}
+                            </DataProvider>
+                        </AbilityProvider>
                     </AuthProvider>
                 </AntdConfigProvider>
             </ThemeProvider>
