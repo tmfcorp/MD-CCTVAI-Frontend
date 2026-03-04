@@ -16,4 +16,52 @@ export const roleAPI = {
       throw error;
     }
   },
+
+  async addRole(data: any): Promise<any> {
+    try {
+      const response = await fetch(roleURL.addRole, {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify(data),
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error adding role:", error);
+      console.log(error);
+      throw error;
+    }
+  },
+
+  async editRole(data: any): Promise<any> {
+    try {
+      const response = await fetch(roleURL.editRole, {
+        method: "PUT",
+        headers: authHeader(),
+        body: JSON.stringify(data),
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error editing role:", error);
+      console.log(error);
+      throw error;
+    }
+  },
+
+  async deleteRole(data: any): Promise<any> {
+    try {
+      const response = await fetch(roleURL.deleteRole, {
+        method: "DELETE",
+        headers: authHeader(),
+        body: JSON.stringify(data),
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error deleting role:", error);
+      console.log(error);
+      throw error;
+    }
+  },
 };

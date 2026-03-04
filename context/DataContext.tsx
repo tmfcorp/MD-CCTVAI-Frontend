@@ -24,9 +24,13 @@ interface DataContextType {
     getUserList: (data: any) => Promise<any>;
     addUser: (data: any) => Promise<any>;
     editUser: (data: any) => Promise<any>;
+    deleteUser: (data: any) => Promise<any>;
     roleList: any[];
     setRoleList: React.Dispatch<React.SetStateAction<any[]>>;
     getRoleList: (data: any) => Promise<any>;
+    addRole: (data: any) => Promise<any>;
+    editRole: (data: any) => Promise<any>;
+    deleteRole: (data: any) => Promise<any>;
 }
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
@@ -95,12 +99,99 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
         }
     }
 
+    const deleteUser = async (data: any) => {
+        try {
+            const res = await userAPI.deleteUser(data);
+
+            console.log("DELETEUSER", res);
+
+            if (res.success) {
+                getUserList({});
+
+                return { success: true };
+            } else {
+                showApiErrors(res);
+                return { success: false };
+            }
+        } catch (error: any) {
+            console.error(error);
+            message.error(error.message || 'API call failed');
+            return { success: false };
+        }
+    }
+
     const getRoleList = async (data: any) => {
         const res = await roleAPI.getRoleList(data);
 
         console.log("ROLELIST", res);
 
         setRoleList(res.data);
+    }
+
+    const addRole = async (data: any) => {
+        try {
+            const res = await roleAPI.addRole(data);
+
+            console.log("ADDROLE", res);
+
+            if (res.success) {
+                message.success('Role added successfully');
+                getRoleList({});
+
+                return { success: true };
+            } else {
+                showApiErrors(res);
+                return { success: false };
+            }
+        } catch (error: any) {
+            console.error(error);
+            message.error(error.message || 'API call failed');
+            return { success: false };
+        }
+    }
+
+    const editRole = async (data: any) => {
+        try {
+            const res = await roleAPI.editRole(data);
+
+            console.log("EDITROLE", res);
+
+            if (res.success) {
+                message.success('Role edited successfully');
+                getRoleList({});
+
+                return { success: true };
+            } else {
+                showApiErrors(res);
+                return { success: false };
+            }
+        } catch (error: any) {
+            console.error(error);
+            message.error(error.message || 'API call failed');
+            return { success: false };
+        }
+    }
+
+    const deleteRole = async (data: any) => {
+        try {
+            const res = await roleAPI.deleteRole(data);
+
+            console.log("DELETEROLE", res);
+
+            if (res.success) {
+                message.success('Role deleted successfully');
+                getRoleList({});
+
+                return { success: true };
+            } else {
+                showApiErrors(res);
+                return { success: false };
+            }
+        } catch (error: any) {
+            console.error(error);
+            message.error(error.message || 'API call failed');
+            return { success: false };
+        }
     }
 
     return (
@@ -111,9 +202,13 @@ export const DataProvider = ({ children }: { children: React.ReactNode }) => {
                 getUserList,
                 addUser,
                 editUser,
+                deleteUser,
                 roleList,
                 setRoleList,
                 getRoleList,
+                addRole,
+                editRole,
+                deleteRole,
             }}
         >
             {children}

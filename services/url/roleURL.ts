@@ -11,4 +11,8 @@ export const roleURL = {
 
     return `${baseURL()}${path}roles/getRoleList?${query}`;
   },
+
+  addRole: `${baseURL()}${path}roles/createRole`,
+  editRole: `${baseURL()}${path}roles/updateRole`,
+  deleteRole: `${baseURL()}${path}roles/deleteRole`,
 };

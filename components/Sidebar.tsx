@@ -10,6 +10,7 @@ import {
     TeamOutlined,
     MenuOutlined,
     VideoCameraOutlined,
+    IdcardOutlined,
 } from '@ant-design/icons';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
@@ -44,6 +45,7 @@ const Sidebar: React.FC = () => {
         { key: '/', icon: <HomeOutlined />, label: <Link href="/">Home</Link> },
         { key: '/profile', icon: <UserOutlined />, label: <Link href="/profile">Profile</Link> },
         { key: '/users', icon: <TeamOutlined />, label: <Link href="/users">Users</Link> },
+        { key: '/role', icon: <IdcardOutlined />, label: <Link href="/role">Roles</Link> },
         { key: '/video', icon: <VideoCameraOutlined />, label: <Link href="/video">Video</Link> },
         { key: '/settings', icon: <SettingOutlined />, label: <Link href="/settings">Settings</Link> },
         { key: '/logout', icon: <LogoutOutlined />, label: 'Logout', danger: true, onClick: logout },
