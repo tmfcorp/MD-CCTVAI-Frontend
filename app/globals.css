@@ -1,30 +1,37 @@
-@import "tailwindcss";
-
+/* =========================
+   Tailwind + CSS Variables
+========================= */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  transition: background-color 0.3s ease, color 0.3s ease;
+  margin: 0;
 }
 
+/* =========================
+   Dark Mode
+========================= */
 .dark {
   --background: #000000;
   --foreground: #ededed;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
-}
-
+/* =========================
+   Ant Design Sider Trigger
+========================= */
 .ant-layout-sider-trigger {
   background: transparent !important;
+  transition: color 0.3s ease;
 }
 
 [data-theme='dark'] .ant-layout-sider-trigger {
@@ -33,4 +40,17 @@ body {
 
 [data-theme='light'] .ant-layout-sider-trigger {
   color: #000 !important;
+}
+
+/* =========================
+   Chrome Autofill Override
+========================= */
+.login-wrapper input:-webkit-autofill,
+.login-wrapper input:-webkit-autofill:hover,
+.login-wrapper input:-webkit-autofill:focus,
+.login-wrapper textarea:-webkit-autofill,
+.login-wrapper select:-webkit-autofill {
+  -webkit-text-fill-color: var(--foreground) !important;
+  -webkit-box-shadow: 0 0 0 1000px var(--background) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
 }

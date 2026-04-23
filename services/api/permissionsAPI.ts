@@ -19,4 +19,19 @@ export const permissionsAPI = {
       throw error;
     }
   },
+
+  async getAllPermissions(): Promise<any> {
+    try {
+      const response = await fetch(permissionsURL.getAllPermissions(), {
+        method: "GET",
+        headers: authHeader(),
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error fetching all permissions:", error);
+      console.log(error);
+      throw error;
+    }
+  },
 };

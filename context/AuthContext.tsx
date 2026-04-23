@@ -1,19 +1,23 @@
 "use client";
 
 import { authAPI } from "@/services/api/authAPI";
-import { message } from "antd";
+import { App } from "antd";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
+import Cookies from 'js-cookie';
 
 interface User {
     user_id: string;
+    id?: string; // optional (since duplicate)
     email: string;
+    name: string;
     role_id: string;
+    role_label: string;
     access_token: string;
     refresh_token: string;
+    token_type?: string;
+    status?: "active" | "inactive";
 }
-
 interface AuthContextType {
     user: User | null;
     setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -26,43 +30,20 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
+    const { message } = App.useApp();
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
     const router = useRouter();
 
     useEffect(() => {
         if (typeof window !== "undefined") {
-            const storedUser = Cookies.get("user");
-            const storedToken = Cookies.get("authToken");
+            const storedUser = localStorage.getItem("user");
+            const storedToken = localStorage.getItem("authToken");
 
             if (storedUser) setUser(JSON.parse(storedUser));
             if (storedToken) setToken(storedToken);
         }
     }, []);
-
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            if (user) {
-                Cookies.set("user", JSON.stringify(user), {
-                    expires: 7,
-                    secure: true,
-                    sameSite: "strict",
-                });
-            } else {
-                Cookies.remove("user");
-            }
-
-            if (token) {
-                Cookies.set("authToken", token, {
-                    expires: 7,
-                    secure: true,
-                    sameSite: "strict",
-                });
-            } else {
-                Cookies.remove("authToken");
-            }
-        }
-    }, [user, token]);
 
     const login = async (data: { email: string; password: string }) => {
         const res = await authAPI.login(data);
@@ -73,17 +54,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             setUser(res.data);
             setToken(res.data.access_token);
 
-            Cookies.set("authToken", res.data.access_token, {
-                expires: 7,
-                secure: true,
-                sameSite: "strict",
-            });
+            localStorage.setItem("authToken", res.data.access_token);
+            localStorage.setItem("user", JSON.stringify(res.data));
 
-            Cookies.set("user", res.data, {
-                expires: 7,
-                secure: true,
-                sameSite: "strict",
-            });
+            Cookies.set("authToken", res.data.access_token)
 
             return { success: true };
         } else {
@@ -97,21 +71,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
             const res = await authAPI.logout();
 
             console.log(res);
-
-            if (res.success) {
-                setUser(null);
-                setToken(null);
-                Cookies.remove("user");
-                Cookies.remove("authToken");
-                router.push("/login");
-            } else {
+            if (!res.success) {
                 message.error(res.message || "Logout failed");
             }
         } catch {
-            message.error("Logout failed");
+            // message.error("Logout failed");
+        } finally {
+            router.push("/login");
+            Cookies.remove("authToken");
+            setUser(null);
+            setToken(null);
+            localStorage.removeItem("user");
+            localStorage.removeItem("authToken");
+
         }
-
-
     };
 
     return (
@@ -136,4 +109,4 @@ export const useAuth = () => {
         throw new Error("useAuth must be used inside AuthProvider");
     }
     return context;
-};
+}; 

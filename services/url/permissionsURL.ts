@@ -10,4 +10,10 @@ export const permissionsURL = {
 
     return `${baseURL()}${path}permissions/getUserPermissionsById?${query}`;
   },
+
+  getAllPermissions: () => {
+    console.log("Get all permissions=>");
+
+    return `${baseURL()}${path}permissions/getPermissionsList`;
+  },
 };

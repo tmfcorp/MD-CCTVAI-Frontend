@@ -11,6 +11,9 @@ export const buildQuery = (params: Record<string, any>) => {
 };
 
 export const baseURL = () => {
+  if (!process.env.NEXT_PUBLIC_API_URL) {
+    throw new Error("NEXT_PUBLIC_API_URL is not defined!");
+  }
   return process.env.NEXT_PUBLIC_API_URL;
 };
 

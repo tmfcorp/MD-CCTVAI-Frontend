@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "CCTV",
-  description: "CCTV Monitoring System",
+  title: "TrueSight",
+  description: "AI-Powered Video Analytics Platform",
 };
 
 export default function RootLayout({

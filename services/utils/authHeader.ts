@@ -1,19 +1,13 @@
-// export const authHeader = () => {
-//   const token = localStorage.getItem("authToken");
-
-//   return {
-//     headers: {
-//       "Content-Type": "application/json",
-//       Authorization: `Bearer ${token}`,
-//     },
-//   };
-// };
-
 export function authHeader(): Record<string, string> {
-  const token = localStorage.getItem("token");
+  if (typeof window === "undefined") {
+    // Server-side: cannot read localStorage
+    return { "Content-Type": "application/json" };
+  }
+
+  const token = localStorage.getItem("authToken") || "";
 
   return {
     "Content-Type": "application/json",
-    Authorization: `Bearer ${token}`,
+    Authorization: token ? `Bearer ${token}` : "",
   };
 }

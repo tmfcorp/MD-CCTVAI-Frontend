@@ -11,14 +11,14 @@ import { DataProvider } from '@/context/DataContext';
 import { AbilityProvider } from '@/context/AbilityContext';
 
 export const ThemeColorContext = React.createContext({
-    primaryColor: '#1677ff',
+    primaryColor: '#3b82f6',
     setPrimaryColor: (color: string) => { },
 });
 
 const AntdConfigProvider = ({ children }: { children: React.ReactNode }) => {
     const { theme } = useTheme();
     const [mounted, setMounted] = useState(false);
-    const [primaryColor, setPrimaryColor] = useState('#1677ff');
+    const [primaryColor, setPrimaryColor] = useState('#3b82f6');
 
 
     useEffect(() => {

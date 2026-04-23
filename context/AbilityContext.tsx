@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { MongoAbility } from "@casl/ability";
-import { Spin } from "antd";
+import { App } from "antd";
 import { abilityFor, buildAbility } from "@/lib/ability";
 import { useAuth } from "./AuthContext";
 import { permissionsAPI } from "@/services/api/permissionsAPI";
@@ -17,6 +17,7 @@ interface AbilityContextType {
     canUpdate: boolean;
     canDelete: boolean;
   };
+  resetAbility: () => void;
 }
 
 const AbilityContext = createContext<AbilityContextType | null>(null);
@@ -34,8 +35,8 @@ export const AbilityProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-
-  const { user } = useAuth();
+  const { message } = App.useApp();
+  const { user, logout } = useAuth();
   const [permissions, setPermissions] = useState<string[]>([]);
   const [ability, setAbility] = useState<MongoAbility | null>(null);
   const [loading, setLoading] = useState(true);
@@ -43,7 +44,12 @@ export const AbilityProvider = ({
   const userId = user?.user_id;
 
   useEffect(() => {
-    if (!userId) return;
+    if (!userId) {
+      setPermissions([]);
+      setAbility(null);
+      setLoading(false);
+      return;
+    }
 
     const fetchPermissions = async () => {
       try {
@@ -56,6 +62,7 @@ export const AbilityProvider = ({
         }
       } catch (error) {
         console.error("Permission fetch error:", error);
+        logout();
       } finally {
         setLoading(false);
       }
@@ -64,6 +71,12 @@ export const AbilityProvider = ({
     fetchPermissions();
   }, [userId]);
 
+  const resetAbility = () => {
+    setPermissions([]);
+    setAbility(null);
+    setLoading(false);
+  };
+
   return (
     <AbilityContext.Provider
       value={{
@@ -71,6 +84,7 @@ export const AbilityProvider = ({
         permissions,
         loading,
         abilityFor: (subject: string) => abilityFor(ability, subject),
+        resetAbility
       }}
     >
       {children}

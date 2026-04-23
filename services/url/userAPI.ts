@@ -30,4 +30,5 @@ export const userURL = {
 
   addUser: `${baseURL()}${path}users/createUser`,
   editUser: `${baseURL()}${path}users/updateUser`,
+  deleteUser: `${baseURL()}${path}users/deleteUser`,
 };

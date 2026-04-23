@@ -48,4 +48,20 @@ export const userAPI = {
       throw error;
     }
   },
+
+  async deleteUser(data: any): Promise<any> {
+    try {
+      const response = await fetch(userURL.deleteUser, {
+        method: "POST",
+        headers: authHeader(),
+        body: JSON.stringify(data),
+      });
+
+      return await response.json();
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      console.log(error);
+      throw error;
+    }
+  },
 };
